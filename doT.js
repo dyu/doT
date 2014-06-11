@@ -13,8 +13,7 @@
 			encode:      /\{\{!([\s\S]+?)\}\}/g,
 			use:         /\{\{#([\s\S]+?)\}\}/g,
 			useParams:   /(^|[^\w$])def(?:\.|\[[\'\"])([\w$\.]+)(?:[\'\"]\])?\s*\:\s*([\w$\.]+|\"[^\"]+\"|\'[^\']+\'|\{[^\}]+\})/g,
-			define:      /\{\{##\s*([\w\.$]+)\s*(\:|=)([\s\S]+?)#\}\}/g,
-			defineParams:/^\s*([\w$]+):([\s\S]+)/,
+			define:      /\{\{##\s*([\w\.$]+)\s*(\([\w$,]*\))?(\:|=)([\s\S]+?)#\}\}/g,
 			conditional: /\{\{\?(\?)?\s*([\s\S]*?)\s*\}\}/g,
 			iterate:     /\{\{~\s*(?:\}\}|([\s\S]+?)\s*\:\s*([\w$]+)\s*(?:\:\s*([\w$]+))?\s*\}\})/g,
 			varname:	'it',
@@ -51,16 +50,15 @@
 
 	function resolveDefs(c, block, def) {
 		return ((typeof block === 'string') ? block : block.toString())
-		.replace(c.define || skip, function(m, code, assign, value) {
+		.replace(c.define || skip, function(m, code, fnArgs, assign, value) {
 			if (code.indexOf('def.') === 0) {
 				code = code.substring(4);
 			}
 			if (!(code in def)) {
-				if (assign === ':') {
-					if (c.defineParams) value.replace(c.defineParams, function(m, param, v) {
-						def[code] = {arg: param, text: v};
-					});
-					if (!(code in def)) def[code]= value;
+			    if (fnArgs) {
+			        def[code] = {arg: fnArgs.substring(1, fnArgs.length - 1) || c.varname, text: value};
+			    } else if (assign === ':') {
+					def[code]= value;
 				} else {
 					new Function("def", "def['"+code+"']=" + value)(def);
 				}
