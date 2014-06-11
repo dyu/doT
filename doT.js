@@ -13,7 +13,7 @@
 			encode:      /\{\{!([\s\S]+?)\}\}/g,
 			use:         /\{\{#([\s\S]+?)\}\}/g,
 			useParams:   /(^|[^\w$])def(?:\.|\[[\'\"])([\w$\.]+)(?:[\'\"]\])?\s*\:\s*([\w$\.]+|\"[^\"]+\"|\'[^\']+\'|\{[^\}]+\})/g,
-			define:      /\{\{##\s*([\w\.$]+)\s*(\([\w$,]*\))?(\:|=)([\s\S]+?)#\}\}/g,
+			define:      /\{\{##\s*([\w\.$]+)\s*(\([\w$, ]*\))?(\:|=)([\s\S]+?)#\}\}/g,
 			conditional: /\{\{\?(\?)?\s*([\s\S]*?)\s*\}\}/g,
 			iterate:     /\{\{~\s*(?:\}\}|([\s\S]+?)\s*\:\s*([\w$]+)\s*(?:\:\s*([\w$]+))?\s*\}\})/g,
 			varname:	'it',
@@ -56,7 +56,7 @@
 			}
 			if (!(code in def)) {
 			    if (fnArgs) {
-			        def[code] = {arg: fnArgs.substring(1, fnArgs.length - 1) || c.varname, text: value};
+			        def[code] = {arg: fnArgs.substring(1, fnArgs.length - 1).trim() || c.varname, text: value};
 			    } else if (assign === ':') {
 					def[code]= value;
 				} else {
