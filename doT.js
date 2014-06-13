@@ -56,7 +56,11 @@
 			}
 			if (!(code in def)) {
 			    if (fnArgs) {
-			        def[code] = {arg: fnArgs.substring(1, fnArgs.length - 1).trim() || c.varname, text: value};
+			        def[code] = {
+			            arg: fnArgs.substring(1, fnArgs.length - 1).trim() || c.varname, 
+			            text: value,
+			            export: (assign === '=')
+			        };
 			    } else if (assign === ':') {
 					def[code]= value;
 				} else {
